@@ -1,3 +1,12 @@
+
+2.0.0 / 2025-01-14
+==================
+
+ * renamed to @pirxpilot/cookie-parser
+ * relax dependencies
+ * format and modernize source
+ * use `node:test` instead of mocha
+
 1.4.7 / 2024-10-08
 ==========
 
