@@ -1,0 +1,8 @@
+{
+  "esversion": 12,
+  "undef": true,
+  "unused": true,
+  "node": true,
+  "asi": true,
+  "laxbreak": true
+}
