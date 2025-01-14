@@ -1,4 +1,4 @@
-
+const { before, describe, it } = require('node:test');
 var assert = require('assert')
 var cookieParser = require('..')
 var http = require('http')
@@ -11,13 +11,13 @@ describe('cookieParser()', function () {
   })
 
   describe('when no cookies are sent', function () {
-    it('should default req.cookies to {}', function (done) {
+    it('should default req.cookies to {}', function (_, done) {
       request(createServer('keyboard cat'))
         .get('/')
         .expect(200, '{}', done)
     })
 
-    it('should default req.signedCookies to {}', function (done) {
+    it('should default req.signedCookies to {}', function (_, done) {
       request(createServer('keyboard cat'))
         .get('/signed')
         .expect(200, '{}', done)
@@ -25,21 +25,21 @@ describe('cookieParser()', function () {
   })
 
   describe('when cookies are sent', function () {
-    it('should populate req.cookies', function (done) {
+    it('should populate req.cookies', function (_, done) {
       request(createServer('keyboard cat'))
         .get('/')
         .set('Cookie', 'foo=bar; bar=baz')
         .expect(200, '{"foo":"bar","bar":"baz"}', done)
     })
 
-    it('should inflate JSON cookies', function (done) {
+    it('should inflate JSON cookies', function (_, done) {
       request(createServer('keyboard cat'))
         .get('/')
         .set('Cookie', 'foo=j:{"foo":"bar"}')
         .expect(200, '{"foo":{"foo":"bar"}}', done)
     })
 
-    it('should not inflate invalid JSON cookies', function (done) {
+    it('should not inflate invalid JSON cookies', function (_, done) {
       request(createServer('keyboard cat'))
         .get('/')
         .set('Cookie', 'foo=j:{"foo":')
@@ -48,7 +48,7 @@ describe('cookieParser()', function () {
   })
 
   describe('when req.cookies exists', function () {
-    it('should do nothing', function (done) {
+    it('should do nothing', function (_, done) {
       var _parser = cookieParser()
       var server = http.createServer(function (req, res) {
         req.cookies = { fizz: 'buzz' }
@@ -74,21 +74,21 @@ describe('cookieParser()', function () {
     var val = signature.sign('foobarbaz', 'keyboard cat')
     // TODO: "bar" fails...
 
-    it('should populate req.signedCookies', function (done) {
+    it('should populate req.signedCookies', function (_, done) {
       request(createServer('keyboard cat'))
         .get('/signed')
         .set('Cookie', 'foo=s:' + val)
         .expect(200, '{"foo":"foobarbaz"}', done)
     })
 
-    it('should remove the signed value from req.cookies', function (done) {
+    it('should remove the signed value from req.cookies', function (_, done) {
       request(createServer('keyboard cat'))
         .get('/')
         .set('Cookie', 'foo=s:' + val)
         .expect(200, '{}', done)
     })
 
-    it('should omit invalid signatures', function (done) {
+    it('should omit invalid signatures', function (_, done) {
       var server = createServer('keyboard cat')
 
       request(server)
@@ -105,7 +105,7 @@ describe('cookieParser()', function () {
   })
 
   describe('when multiple secrets are given', function () {
-    it('should populate req.signedCookies', function (done) {
+    it('should populate req.signedCookies', function (_, done) {
       request(createServer(['keyboard cat', 'nyan cat']))
         .get('/signed')
         .set('Cookie', 'buzz=s:foobar.N5r0C3M8W+IPpzyAJaIddMWbTGfDSO+bfKlZErJ+MeE; fizz=s:foobar.JTCAgiMWsnuZpN3mrYnEUjXlGxmDi4POCBnWbRxse88')
@@ -119,14 +119,14 @@ describe('cookieParser()', function () {
       server = createServer()
     })
 
-    it('should populate req.cookies', function (done) {
+    it('should populate req.cookies', function (_, done) {
       request(server)
         .get('/')
         .set('Cookie', 'foo=bar; bar=baz')
         .expect(200, '{"foo":"bar","bar":"baz"}', done)
     })
 
-    it('should not populate req.signedCookies', function (done) {
+    it('should not populate req.signedCookies', function (_, done) {
       var val = signature.sign('foobarbaz', 'keyboard cat')
       request(server)
         .get('/signed')
